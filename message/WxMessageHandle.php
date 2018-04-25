@@ -23,7 +23,7 @@ class WxMessageHandle {
 		// get post data, May be due to the different environments
 		//$postStr = $GLOBALS ["HTTP_RAW_POST_DATA"]; // 接收post内容
 		$postStr = file_get_contents("php://input"); // 接收post内容
-		$this->log("msg:\n$postStr\n");
+		$this->log("msg:\n$postStr");
 	
 		// extract post data
 		if (! empty ( $postStr )) {
@@ -38,7 +38,7 @@ class WxMessageHandle {
 			$msgType = trim ( $postObj->MsgType );
 			$time = time ();
 				
-			$this->log($fromUsername.'---'.$toUsername);
+			$this->log('message by: '.$fromUsername.' to '.$toUsername);
 				
 			if (! empty ( $msgType )) {
 				if ($msgType == 'event') { // 事件

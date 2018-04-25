@@ -2,9 +2,8 @@
 // header ( "Content-type: text/html; charset=utf-8" );
 
 // 定义log文件路径
-define ( "LOG_PATH", "/root/home/www/XfxyService/mylog.txt" );
+define ( "LOG_PATH", "/home/www/XfxyService/mylog.txt" );
 class LogUtil {
-	private $name; // 声明一个私有的实例变量
 	private function __construct() { // 声明私有构造方法为了防止外部代码使用new来创建对象。
 	}
 	public static $instance; // 声明一个静态变量（保存在类中唯一的一个实例）
@@ -14,6 +13,7 @@ class LogUtil {
 		return self::$instance;
 	}
 	public function printlnLog($logContent) {
+		file_put_contents ( LOG_PATH, "\n\n", FILE_APPEND );
 		file_put_contents ( LOG_PATH, $logContent, FILE_APPEND );
 	}
 }
