@@ -5,22 +5,27 @@ class AccessTokenUtil {
 	}
 	
 	public function getBaseAccessToken() {
-		$result = $this->selectBaseAccessToken ();
+// 		$result = $this->selectBaseAccessToken ();
 		
-		if ($result == null) {
+// 		if ($result == null) {
 			return $token = $this->get_access_token ();
-		} else {
-			return $result;
-		}
+// 		} else {
+// 			return $result;
+// 		}
 	}
 	
 	private function get_access_token() {
 		// $request_access_token_url = 'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=wx98e0c35e7e056459&secret=7120e90481b3668a267b22684ccbdfd2';
 		// $request_result = file_get_contents ( $request_access_token_url );
-		require_once '../weuipage/jssdk.php';
-		$jssdk = new JSSDK ();
-		$appId=$jssdk->getAppId();
-		$appSecret=$jssdk->getAppSecret();
+// 		include_once '../weuipage/jssdk.php';
+// 		$jssdk = new JSSDK ();
+// 		$appId=$jssdk->getAppId();
+// 		$appSecret=$jssdk->getAppSecret();
+		$appId='wxaea0cd3bfddc4647';
+		$appSecret='5749b19362e7e94cbfeeb84b273b3651';
+		
+		
+// 		return $appId.'  '.$appSecret;
 		
 		$request_access_token_url = 'https://api.weixin.qq.com/cgi-bin/token';
 		
@@ -46,7 +51,7 @@ class AccessTokenUtil {
 		
 		$expires_in = $expires_in + time ();
 		// echo $access_token . '</br>' . $expires_in;
-		$this->saveBaseAccessToken ( $access_token, $expires_in );
+// 		$this->saveBaseAccessToken ( $access_token, $expires_in );
 		return $access_token;
 	}
 	private function selectBaseAccessToken() {
@@ -117,5 +122,3 @@ class AccessTokenUtil {
 		// return true;
 	}
 }
-
-?>

@@ -3,8 +3,9 @@ include_once 'utils/LogUtil.php';
 
 /**
  * 微信消息推送处理类
- * @author yt
  *
+ * @author yt
+ *        
  */
 class WxMessageHandle {
 	private function __construct() {
@@ -21,10 +22,10 @@ class WxMessageHandle {
 	 */
 	public function responseMsg() {
 		// get post data, May be due to the different environments
-		//$postStr = $GLOBALS ["HTTP_RAW_POST_DATA"]; // 接收post内容
-		$postStr = file_get_contents("php://input"); // 接收post内容
-		$this->log("msg:\n$postStr");
-	
+		// $postStr = $GLOBALS ["HTTP_RAW_POST_DATA"]; // 接收post内容
+		$postStr = file_get_contents ( "php://input" ); // 接收post内容
+		$this->log ( "msg:\n$postStr" );
+		
 		// extract post data
 		if (! empty ( $postStr )) {
 			/*
@@ -37,14 +38,14 @@ class WxMessageHandle {
 			// $keyword = trim ( $postObj->Content );
 			$msgType = trim ( $postObj->MsgType );
 			$time = time ();
-				
-			$this->log('message by: '.$fromUsername.' to '.$toUsername);
-				
+			
+			$this->log ( 'message by: ' . $fromUsername . ' to ' . $toUsername );
+			
 			if (! empty ( $msgType )) {
 				if ($msgType == 'event') { // 事件
 					$event = $postObj->Event;
 					if ($event == 'subscribe') { // 关注
-						$this->log("subscribe");
+						$this->log ( "subscribe" );
 						$textTpl = "<xml>
 						<ToUserName><![CDATA[$fromUsername]]></ToUserName>
 						<FromUserName><![CDATA[$toUsername]]></FromUserName>
@@ -57,7 +58,17 @@ class WxMessageHandle {
 						$resultStr = sprintf ( $textTpl, $fromUsername, $toUsername, $time, $msgType, $contentStr );
 						echo $resultStr;
 					} else if ($event == 'unsubscribe') { // 取消关注
-						$this->log("unsubscribe");
+						$this->log ( "unsubscribe" );
+					} else if ($event == 'scancode_waitmsg') {
+						$eventKey = $postObj->EventKey;
+						if ($eventKey == 'bind_device') { // 绑定设备
+							$scanCodeInfo = $postObj->ScanCodeInfo;
+							$scanType = $scanCodeInfo->ScanType;
+							$scanResult = $scanCodeInfo->ScanResult;
+							if ($scanType == 'qrcode' && ! empty ( $scanResult )) {
+								$this->chat ( $fromUsername, $toUsername, $time, $scanResult );
+							}
+						}
 					}
 				} else if ($msgType == 'text') {
 					$content = $postObj->Content;
@@ -71,35 +82,32 @@ class WxMessageHandle {
 			exit ();
 		}
 	}
-
 	function log($logContent) {
 		$logUtil = LogUtil::getinstance ();
-		$logUtil->printlnLog($logContent);
+		$logUtil->printlnLog ( $logContent );
 	}
 	
 	/**
 	 * 闲聊
 	 *
-	 * @param unknown $fromUsername
-	 * @param unknown $toUsername
-	 * @param unknown $time
-	 * @param unknown $content
+	 * @param unknown $fromUsername        	
+	 * @param unknown $toUsername        	
+	 * @param unknown $time        	
+	 * @param unknown $content        	
 	 */
 	function chat($fromUsername, $toUsername, $time, $content) {
-		$chatResult = 'hello';
-	
+		// $chatResult = 'hello';
 		$textTpl = "<xml>
 		<ToUserName><![CDATA[$fromUsername]]></ToUserName>
 		<FromUserName><![CDATA[$toUsername]]></FromUserName>
 		<CreateTime>$time</CreateTime>
 		<MsgType><![CDATA[text]]></MsgType>
-		<Content><![CDATA[$chatResult]]></Content>
+		<Content><![CDATA[$content]]></Content>
 		</xml>";
 		$msgType = "text";
 		$contentStr = "title";
 		$resultStr = sprintf ( $textTpl, $fromUsername, $toUsername, $time, $msgType, $contentStr );
-		//echo $resultStr;
+		// echo $resultStr;
 		print $resultStr;
 	}
-
 }
